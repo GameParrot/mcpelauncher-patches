@@ -12,6 +12,8 @@
 #include <string>
 #include <jnivm/vm.h>
 #include <jnivm/env.h>
+#include <fstream>
+#include <sstream>
 
 #ifdef NDEBUG
 #define printf(...)
@@ -106,8 +108,8 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
         login_api.set_token("l@localhost", "a");
         playapi::api api(device);
         playapi::checkin_result checkinResult;
-        playapi::checkin_api checkin(loginHelper->getDevice());
-        checkin.add_auth(loginHelper->getLoginApi())->call();
+        playapi::checkin_api checkin(device);
+        checkin.add_auth(login_api)->call();
         checkinResult = checkin.perform_checkin()->call();
         api.set_checkin_data(checkinResult);
         api.set_auth(login_api)->call();
