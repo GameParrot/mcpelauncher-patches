@@ -40,16 +40,6 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
         std::string cachePathStorage;
         auto suffix = "playapi_token_cache.conf";
         if(!cachePath) {
-            /*Dl_info info;
-            if(!dladdr(&mod_preinit, &info)) {
-                return;
-            }
-            cachePathStorage = info.dli_fname ? info.dli_fname : "";
-            auto fslash = cachePathStorage.rfind('/');
-            if(fslash == std::string::npos) {
-                return;
-            }
-            cachePathStorage*/
             std::vector<std::string> paths;
             auto cacheBasePath = getenv("XDG_CACHE_HOME");
             if(cacheBasePath) {
@@ -72,7 +62,7 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
             }
             auto localAppdata = getenv("LOCALAPPDATA");
             if(localAppdata) {
-                auto finalPath = localAppdata + "/Minecraft Linux Launcher/Minecraft Linux Launcher UI/cache/" + suffix;
+                auto finalPath = localAppdata + ("/Minecraft Linux Launcher/Minecraft Linux Launcher UI/cache/" + suffix);
                 if(!access(finalPath.data(), R_OK)) {
                     cachePathStorage = finalPath;
                     cachePath = cachePathStorage.data();
@@ -135,11 +125,17 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
                 } else {
                     if(sres != std::string::npos) {
                         try {
-                            std::ofstream fs((cachePathStorage.substr(0, sres) + "/misc.cache").data());
-                            playapi::config c;
-                            c.set("path", cachePathStorage);
-                            c.set_long("idx", cachePathStorage.length() + buf.length());
-                            c.save(fs);
+                          std::ifstream f(cachePathStorage.data());
+                          if(f.is_open()) {
+                              std::stringstream s;
+                              s << f.rdbuf();
+                              auto buf = s.str();
+                              std::ofstream fs((cachePathStorage.substr(0, sres) + "/misc.cache").data());
+                              playapi::config c;
+                              c.set("path", cachePathStorage);
+                              c.set_long("idx", cachePathStorage.length() + buf.length());
+                              c.save(fs);
+                          }
                         } catch(...) {
                         }
                     }
