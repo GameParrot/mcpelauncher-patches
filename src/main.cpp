@@ -40,7 +40,7 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
         playapi::device_info device;
         auto cachePath = getenv("GPLAY_TOKEN_CACHE_PATH");
         std::string cachePathStorage;
-        auto suffix = "playapi_token_cache.conf";
+        std::string suffix = "playapi_token_cache.conf";
         if(!cachePath) {
             std::vector<std::string> paths;
             auto cacheBasePath = getenv("XDG_CACHE_HOME");
