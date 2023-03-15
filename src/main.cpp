@@ -16,7 +16,7 @@
 
 void (*mcpelauncher_preinithook)(const char*sym, void*val, void **orig);
 
-cmsghdr* __cmsg_nxthdr(msghdr* msg, cmsghdr* cmsg) {
+cmsghdr* ___cmsg_nxthdr(msghdr* msg, cmsghdr* cmsg) {
   cmsghdr* ptr;
   ptr = reinterpret_cast<cmsghdr*>(reinterpret_cast<char*>(cmsg) + CMSG_ALIGN(cmsg->cmsg_len));
   size_t len = reinterpret_cast<char*>(ptr+1) - reinterpret_cast<char*>(msg->msg_control);
@@ -31,7 +31,7 @@ int __socket(int affamily, int type, int protocol) {
     switch(affamily) {
         case AF_INET:
         case AF_INET6:
-            return __socket_org(affamily, type, protocol);
+            return socket(affamily, type, protocol);
         default:
             errno = EAFNOSUPPORT;
             return 0;
@@ -54,7 +54,6 @@ struct macOS_cmsghdr {
 /* followed by	unsigned char  cmsg_data[]; */
 };
 
-ssize_t (*__sendmsg_org)(int socket, const struct macOS_msghdr *message, int flags);
 ssize_t __sendmsg(int socket, const struct msghdr *message, int flags) {
     macOS_msghdr mmessage;
     if(message->msg_namelen > 0) {
@@ -70,11 +69,10 @@ ssize_t __sendmsg(int socket, const struct msghdr *message, int flags) {
     mmessage.msg_control = nullptr;
     mmessage.msg_controllen = 0;
     mmessage.msg_flags = message->msg_flags;
-    auto ret = __sendmsg_org(socket, &mmessage, flags);
+    auto ret = sendmsg(socket, (struct msghdr *)&mmessage, flags);
     return ret;
 }
 
-ssize_t (*__recvmsg_org)(int socket, struct macOS_msghdr *message, int flags);
 ssize_t __recvmsg(int socket, struct msghdr *message, int flags) {
     macOS_msghdr mmessage;
     if(message->msg_namelen > 0) {
@@ -90,7 +88,7 @@ ssize_t __recvmsg(int socket, struct msghdr *message, int flags) {
     mmessage.msg_control = nullptr;
     mmessage.msg_controllen = 0;
     mmessage.msg_flags = message->msg_flags;
-    auto ret = __recvmsg_org(socket, &mmessage, flags);
+    auto ret = recvmsg(socket, (struct msghdr *)&mmessage, flags);
     if(mmessage.msg_namelen > 0) {
         printf("recvmsg mmessage.msg_controllen > 0: %lld\n", (long long)mmessage.msg_controllen);
     }
@@ -114,8 +112,8 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
     }
     mcpelauncher_preinithook = (decltype(mcpelauncher_preinithook)) dlsym(h, "mcpelauncher_preinithook");
     dlclose(h);
-    mcpelauncher_preinithook("__cmsg_nxthdr", (void*)&__cmsg_nxthdr, nullptr);
-    mcpelauncher_preinithook("socket", (void*)&__socket, (void**)&__socket_org);
-    mcpelauncher_preinithook("sendmsg", (void*)&__sendmsg, (void**)&__sendmsg_org);
-    mcpelauncher_preinithook("recvmsg", (void*)&__recvmsg, (void**)&__recvmsg_org);
+    mcpelauncher_preinithook("__cmsg_nxthdr", (void*)&___cmsg_nxthdr, nullptr);
+    mcpelauncher_preinithook("socket", (void*)&__socket, nullptr);
+    mcpelauncher_preinithook("sendmsg", (void*)&__sendmsg, nullptr);
+    mcpelauncher_preinithook("recvmsg", (void*)&__recvmsg, nullptr);
 }
