@@ -54,22 +54,22 @@ struct macOS_cmsghdr {
 /* followed by	unsigned char  cmsg_data[]; */
 };
 
-ssize_t (*__sendmsg_org)(int socket, const struct msghdr *message, int flags)
+ssize_t (*__sendmsg_org)(int socket, const struct msghdr *message, int flags);
 ssize_t __sendmsg(int socket, const struct msghdr *message, int flags) {
     macOS_msghdr mmessage;
-    if(message.msg_namelen > 0) {
-        printf("sendmsg message.msg_controllen > 0: %lld\n", (long long)message.msg_controllen);
+    if(message->msg_namelen > 0) {
+        printf("sendmsg message->msg_controllen > 0: %lld\n", (long long)message->msg_controllen);
     }
-    mmessage.msg_name = nullptr; //message.msg_name;
-    mmessage.msg_namelen = 0; //message.msg_namelen
-    mmessage.msg_iov = message.msg_iov;
-    mmessage.msg_iovlen = (decltype(mmessage.msg_iovlen))message.msg_iovlen;
-    if(message.msg_controllen > 0) {
-        printf("sendmsg message.msg_controllen > 0: %lld\n", (long long)message.msg_controllen);
+    mmessage.msg_name = nullptr; //message->msg_name;
+    mmessage.msg_namelen = 0; //message->msg_namelen
+    mmessage.msg_iov = message->msg_iov;
+    mmessage.msg_iovlen = (decltype(mmessage.msg_iovlen))message->msg_iovlen;
+    if(message->msg_controllen > 0) {
+        printf("sendmsg message->msg_controllen > 0: %lld\n", (long long)message->msg_controllen);
     }
     mmessage.msg_control = nullptr;
     mmessage.msg_controllen = 0;
-    mmessage.msg_flags = message.msg_flags;
+    mmessage.msg_flags = message->msg_flags;
     auto ret = __sendmsg_org(socket, &mmessage, flags);
     return ret;
 }
@@ -77,33 +77,33 @@ ssize_t __sendmsg(int socket, const struct msghdr *message, int flags) {
 ssize_t (*__recvmsg_org)(int socket, struct msghdr *message, int flags);
 ssize_t __recvmsg(int socket, struct msghdr *message, int flags) {
     macOS_msghdr mmessage;
-    if(message.msg_namelen > 0) {
-        printf("recvmsg message.msg_controllen > 0: %lld\n", (long long)message.msg_controllen);
+    if(message->msg_namelen > 0) {
+        printf("recvmsg message->msg_controllen > 0: %lld\n", (long long)message->msg_controllen);
     }
-    mmessage.msg_name = nullptr; //message.msg_name;
-    mmessage.msg_namelen = 0; //message.msg_namelen
-    mmessage.msg_iov = message.msg_iov;
-    mmessage.msg_iovlen = (decltype(mmessage.msg_iovlen))message.msg_iovlen;
-    if(message.msg_controllen > 0) {
-        printf("recvmsg message.msg_controllen > 0: %lld\n", (long long)message.msg_controllen);
+    mmessage.msg_name = nullptr; //message->msg_name;
+    mmessage.msg_namelen = 0; //message->msg_namelen
+    mmessage.msg_iov = message->msg_iov;
+    mmessage.msg_iovlen = (decltype(mmessage.msg_iovlen))message->msg_iovlen;
+    if(message->msg_controllen > 0) {
+        printf("recvmsg message->msg_controllen > 0: %lld\n", (long long)message->msg_controllen);
     }
     mmessage.msg_control = nullptr;
     mmessage.msg_controllen = 0;
-    mmessage.msg_flags = message.msg_flags;
+    mmessage.msg_flags = message->msg_flags;
     auto ret = __recvmsg_org(socket, &mmessage, flags);
     if(mmessage.msg_namelen > 0) {
         printf("recvmsg mmessage.msg_controllen > 0: %lld\n", (long long)mmessage.msg_controllen);
     }
-    message.msg_name = nullptr; //mmessage.msg_name;
-    message.msg_namelen = 0; //mmessage.msg_namelen
-    message.msg_iov = mmessage.msg_iov;
-    message.msg_iovlen = (decltype(message.msg_iovlen))mmessage.msg_iovlen;
+    message->msg_name = nullptr; //mmessage.msg_name;
+    message->msg_namelen = 0; //mmessage.msg_namelen
+    message->msg_iov = mmessage.msg_iov;
+    message->msg_iovlen = (decltype(message->msg_iovlen))mmessage.msg_iovlen;
     if(mmessage.msg_controllen > 0) {
         printf("recvmsg mmessage.msg_controllen > 0: %lld\n", (long long)mmessage.msg_controllen);
     }
-    message.msg_control = nullptr;
-    message.msg_controllen = 0;
-    message.msg_flags = mmessage.msg_flags;
+    message->msg_control = nullptr;
+    message->msg_controllen = 0;
+    message->msg_flags = mmessage.msg_flags;
 }
 
 extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
