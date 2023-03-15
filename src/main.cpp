@@ -8,6 +8,7 @@
 #include <jnivm/env.h>
 #include <fstream>
 #include <sstream>
+#include <sys/ioctl.h>
 #include <sys/socket.h>
 
 #ifdef NDEBUG
@@ -108,9 +109,9 @@ ssize_t __recvmsg(int socket, struct msghdr *message, int flags) {
 
 int __ioctl(int fd, unsigned long cmd, void *arg) {
     switch(cmd) {
-        case FILE_NBIO:
-        case SOCKET_CGIFCONF:
-        case SOCKET_CGIFNETMASK:
+        case FIONBIO:
+        case SIOCGIFNETMASK:
+        case SIOCGIFCONF:
             return ioctl(fd, cmd, arg);
         default:
             printf("ioctl no support: %lld\n", (long long)cmd);
