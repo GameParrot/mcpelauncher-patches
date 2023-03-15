@@ -104,6 +104,7 @@ ssize_t __recvmsg(int socket, struct msghdr *message, int flags) {
     message->msg_control = nullptr;
     message->msg_controllen = 0;
     message->msg_flags = mmessage.msg_flags;
+    return ret;
 }
 
 extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
@@ -114,7 +115,7 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
     mcpelauncher_preinithook = (decltype(mcpelauncher_preinithook)) dlsym(h, "mcpelauncher_preinithook");
     dlclose(h);
     mcpelauncher_preinithook("__cmsg_nxthdr", (void*)&__cmsg_nxthdr, nullptr);
-    mcpelauncher_preinithook("socket", (void*)&__socket, (void**)&__socket_org));
+    mcpelauncher_preinithook("socket", (void*)&__socket, (void**)&__socket_org);
     mcpelauncher_preinithook("sendmsg", (void*)&__sendmsg, (void**)&__sendmsg_org);
     mcpelauncher_preinithook("recvmsg", (void*)&__recvmsg, (void**)&__recvmsg_org);
 }
