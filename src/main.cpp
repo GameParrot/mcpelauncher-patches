@@ -25,4 +25,7 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
     mcpelauncher_preinithook("__cmsg_nxthdr", (void*)+[](void* msgh, void* cmsg) -> void* {
         return nullptr;
     }, nullptr);
+    mcpelauncher_preinithook("socket", (void*)+[](int, int, int) -> int {
+        return 0;
+    }, nullptr);
 }
