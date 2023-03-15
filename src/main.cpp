@@ -54,7 +54,7 @@ struct macOS_cmsghdr {
 /* followed by	unsigned char  cmsg_data[]; */
 };
 
-ssize_t (*__sendmsg_org)(int socket, const struct msghdr *message, int flags);
+ssize_t (*__sendmsg_org)(int socket, const struct macOS_msghdr *message, int flags);
 ssize_t __sendmsg(int socket, const struct msghdr *message, int flags) {
     macOS_msghdr mmessage;
     if(message->msg_namelen > 0) {
@@ -74,7 +74,7 @@ ssize_t __sendmsg(int socket, const struct msghdr *message, int flags) {
     return ret;
 }
 
-ssize_t (*__recvmsg_org)(int socket, struct msghdr *message, int flags);
+ssize_t (*__recvmsg_org)(int socket, struct macOS_msghdr *message, int flags);
 ssize_t __recvmsg(int socket, struct msghdr *message, int flags) {
     macOS_msghdr mmessage;
     if(message->msg_namelen > 0) {
@@ -114,7 +114,7 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
     mcpelauncher_preinithook = (decltype(mcpelauncher_preinithook)) dlsym(h, "mcpelauncher_preinithook");
     dlclose(h);
     mcpelauncher_preinithook("__cmsg_nxthdr", (void*)&__cmsg_nxthdr, nullptr);
-    mcpelauncher_preinithook("socket", (void*)&__socket, (void*)&__socket_org));
-    mcpelauncher_preinithook("sendmsg", (void*)&__sendmsg, (void*)&__sendmsg_org);
-    mcpelauncher_preinithook("recvmsg", (void*)&__recvmsg, (void*)&__recvmsg_org);
+    mcpelauncher_preinithook("socket", (void*)&__socket, (void**)&__socket_org));
+    mcpelauncher_preinithook("sendmsg", (void*)&__sendmsg, (void**)&__sendmsg_org);
+    mcpelauncher_preinithook("recvmsg", (void*)&__recvmsg, (void**)&__recvmsg_org);
 }
