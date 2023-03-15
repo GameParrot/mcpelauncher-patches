@@ -33,8 +33,9 @@ int __socket(int affamily, int type, int protocol) {
         case AF_INET6:
             return socket(affamily, type, protocol);
         default:
+            printf("socket EAFNOSUPPORT: %lld\n", (long long)affamily);
             errno = EAFNOSUPPORT;
-            return 0;
+            return -1;
     }
 }
 
@@ -105,6 +106,19 @@ ssize_t __recvmsg(int socket, struct msghdr *message, int flags) {
     return ret;
 }
 
+int __ioctl(int fd, unsigned long cmd, void *arg) {
+    switch(cmd) {
+        case FILE_NBIO:
+        case SOCKET_CGIFCONF:
+        case SOCKET_CGIFNETMASK:
+            return ioctl(fd, cmd, arg);
+        default:
+            printf("ioctl no support: %lld\n", (long long)cmd);
+            errno = EINVAL;
+            return -1;
+    }
+}
+
 extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
     auto h = dlopen("libmcpelauncher_mod.so", 0);
     if(!h) {
@@ -116,4 +130,5 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
     mcpelauncher_preinithook("socket", (void*)&__socket, nullptr);
     mcpelauncher_preinithook("sendmsg", (void*)&__sendmsg, nullptr);
     mcpelauncher_preinithook("recvmsg", (void*)&__recvmsg, nullptr);
+    mcpelauncher_preinithook("ioctl", (void*)&__ioctl, nullptr);
 }
