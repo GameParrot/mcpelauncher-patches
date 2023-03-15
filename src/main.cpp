@@ -3,12 +3,6 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 #include <sys/mman.h>
-#include <playapi/api.h>
-#include <playapi/device_info.h>
-#include <playapi/login.h>
-#include <playapi/file_login_cache.h>
-#include <playapi/checkin.h>
-#include <playapi/util/config.h>
 #include <string>
 #include <jnivm/vm.h>
 #include <jnivm/env.h>
