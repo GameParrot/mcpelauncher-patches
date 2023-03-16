@@ -30,7 +30,7 @@ int __socket(int affamily, int type, int protocol) {
         case AF_INET6:
             return socket(affamily, type, protocol);
         default:
-            printf("socket EAFNOSUPPORT: %lld\n", (long long)affamily);
+            printf("socket EAFNOSUPPORT: socket(%lld, %lld, %lld)\n", (long long)affamily, (long long)type, (long long)protocol);
             errno = EAFNOSUPPORT;
             return -1;
     }
@@ -55,7 +55,7 @@ struct macOS_cmsghdr {
 ssize_t __sendmsg(int socket, const struct msghdr *message, int flags) {
     macOS_msghdr mmessage;
     if(message->msg_namelen > 0) {
-        printf("sendmsg message->msg_controllen > 0: %lld\n", (long long)message->msg_controllen);
+        printf("sendmsg message->msg_namelen > 0: %lld\n", (long long)message->msg_controllen);
     }
     mmessage.msg_name = nullptr; //message->msg_name;
     mmessage.msg_namelen = 0; //message->msg_namelen
@@ -74,7 +74,7 @@ ssize_t __sendmsg(int socket, const struct msghdr *message, int flags) {
 ssize_t __recvmsg(int socket, struct msghdr *message, int flags) {
     macOS_msghdr mmessage;
     if(message->msg_namelen > 0) {
-        printf("recvmsg message->msg_controllen > 0: %lld\n", (long long)message->msg_controllen);
+        printf("recvmsg message->msg_namelen > 0: %lld\n", (long long)message->msg_controllen);
     }
     mmessage.msg_name = nullptr; //message->msg_name;
     mmessage.msg_namelen = 0; //message->msg_namelen
@@ -88,7 +88,7 @@ ssize_t __recvmsg(int socket, struct msghdr *message, int flags) {
     mmessage.msg_flags = message->msg_flags;
     auto ret = recvmsg(socket, (struct msghdr *)&mmessage, flags);
     if(mmessage.msg_namelen > 0) {
-        printf("recvmsg mmessage.msg_controllen > 0: %lld\n", (long long)mmessage.msg_controllen);
+        printf("recvmsg mmessage.msg_namelen > 0: %lld\n", (long long)mmessage.msg_controllen);
     }
     message->msg_name = nullptr; //mmessage.msg_name;
     message->msg_namelen = 0; //mmessage.msg_namelen
