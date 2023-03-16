@@ -11,10 +11,6 @@
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 
-#ifdef NDEBUG
-#define printf(...)
-#endif
-
 void (*mcpelauncher_preinithook)(const char*sym, void*val, void **orig);
 
 cmsghdr* ___cmsg_nxthdr(msghdr* msg, cmsghdr* cmsg) {
