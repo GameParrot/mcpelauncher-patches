@@ -37,7 +37,7 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target minecraftpe
     - run: |
         mkdir -p out/lib/${{ matrix.abi }}
-        cp build/libmcpelauncherupdates.so out/lib/${{ matrix.abi }}/
+        cp build/libminecraftpe.so out/lib/${{ matrix.abi }}/
         cp libc++_shared.so out/lib/${{ matrix.abi }}/
     - uses: actions/upload-artifact@v3
       with:
