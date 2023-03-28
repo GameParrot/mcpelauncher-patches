@@ -15,31 +15,26 @@ jobs:
         abi: ["x86_64", "arm64-v8a", "x86", "armeabi-v7a" ]
         include:
         - abi: x86_64
-          ndktarget: x86_64-linux-android-
+          ndktarget: x86_64-linux-android
         - abi: x86
-          ndktarget: i686-linux-android-
+          ndktarget: i686-linux-android
         - abi: armeabi-v7a
           openssltarget: android-arm
-          ndktarget: arm-linux-androideabi-
+          ndktarget: arm-linux-androideabi
         - abi: arm64-v8a
           openssltarget: android-arm64
-          ndktarget: aarch64-linux-android-
+          ndktarget: aarch64-linux-android
     steps:
-    - run: sudo apt update && sudo apt install llvm g++ ninja-build
-    - uses: actions/checkout@v3
-    - uses: nttld/setup-ndk@v1
-      id: setup-ndk
-      with:
-        ndk-version: r21e
-        add-to-path: true
-        
+    - name: Extract cxxlib
+      run: cp "$ANDROID_NDK/sysroot/usr/lib/${{ matrix.ndktarget }}/libc++_shared.so" ./
+    - uses: actions/checkout@v3    
     - name: Configure
-      run: cmake -B ${{github.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake -DANDROID_ABI=${{ matrix.abi }} "-DCMAKE_CXX_FLAGS=-Wl,--strip-all -fvisibility=hidden"
+      run: cmake -B ${{github.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} "-DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake" -DANDROID_ABI=${{ matrix.abi }}
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target mcpelauncherupdates
-    
     - uses: actions/upload-artifact@v3
       with:
         name: update-${{format('android-{0}', matrix.abi)}}
         path: |
           build/libmcpelauncherupdates.so
+          libc++_shared.so
