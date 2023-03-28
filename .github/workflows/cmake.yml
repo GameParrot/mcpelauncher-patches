@@ -25,6 +25,7 @@ jobs:
           openssltarget: android-arm64
           ndktarget: aarch64-linux-android
     steps:
+    - run: sudo apt update && sudo apt install -y --no-install-recommends ninja-build
     - name: Extract cxxlib
       run: |
         ls -l -R "$ANDROID_NDK"
