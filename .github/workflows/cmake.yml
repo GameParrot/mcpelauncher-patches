@@ -34,10 +34,13 @@ jobs:
     - name: Configure
       run: cmake -B ${{github.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} "-DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake" -DANDROID_ABI=${{ matrix.abi }}
     - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target mcpelauncherupdates
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target minecraftpe
+    - run: |
+        mkdir -p out/lib/${{ matrix.abi }}
+        cp build/libmcpelauncherupdates.so out/lib/${{ matrix.abi }}/
+        cp libc++_shared.so out/lib/${{ matrix.abi }}/
     - uses: actions/upload-artifact@v3
       with:
         name: update-${{format('android-{0}', matrix.abi)}}
         path: |
-          build/libmcpelauncherupdates.so
-          libc++_shared.so
+          out/
