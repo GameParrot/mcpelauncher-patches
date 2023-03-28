@@ -28,8 +28,8 @@ jobs:
     - name: Extract cxxlib
       run: |
         ls -l -R "$ANDROID_NDK"
-        cp "$ANDROID_NDK/sysroot/usr/lib/${{ matrix.ndktarget }}/libc++_shared.so" ./
-    - uses: actions/checkout@v3    
+        cp "$ANDROID_NDK/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/${{ matrix.ndktarget }}/libc++_shared.so" ./
+    - uses: actions/checkout@v3
     - name: Configure
       run: cmake -B ${{github.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} "-DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake" -DANDROID_ABI=${{ matrix.abi }}
     - name: Build
