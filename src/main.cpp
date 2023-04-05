@@ -14,12 +14,16 @@ void*_ZNK11AppPlatform12isLANAllowedEv;
 void*__ZNK11AppPlatform12isLANAllowedEv;
 
 extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
+    printf("Loading mod\n");
     auto h = dlopen("libmcpelauncher_mod.so", 0);
     if(!h) {
         return;
     }
     mcpelauncher_preinithook = (decltype(mcpelauncher_preinithook)) dlsym(h, "mcpelauncher_preinithook");
+    
+    printf("Loading mod %p\n", mcpelauncher_preinithook);
     __ZNK11AppPlatform12isLANAllowedEv = (void*)+[](void*** t) -> bool {
+        printf("__ZNK11AppPlatform12isLANAllowedEv\n");
         auto mc = dlopen("libminecraftpe.so", 0);
 
         auto appPlat = (void**)dlsym(mc, "_ZTV11AppPlatform");
