@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  BUILD_TYPE: Release
+  BUILD_TYPE: Debug
 
 jobs:
   build:
@@ -27,18 +27,20 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: sudo apt update && sudo apt install -y --no-install-recommends ninja-build
-    - name: Extract cxxlib
-      run: |
-        ls -l -R "$ANDROID_NDK"
-        cp "$ANDROID_NDK/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/${{ matrix.ndktarget }}/libc++_shared.so" ./
+    - uses: nttld/setup-ndk@v1
+      id: setup-ndk
+      with:
+        ndk-version: r21e
+        add-to-path: true
     - name: Configure
       run: cmake -B ${{github.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} "-DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake" -DANDROID_ABI=${{ matrix.abi }}
+      env:
+        ANDROID_NDK: ${{ steps.setup-ndk.outputs.ndk-path }}
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target minecraftpe
     - run: |
         mkdir -p out/lib/${{ matrix.abi }}
         cp build/libminecraftpe.so out/lib/${{ matrix.abi }}/
-        cp libc++_shared.so out/lib/${{ matrix.abi }}/
     - uses: actions/upload-artifact@v3
       with:
         name: update-${{format('android-{0}', matrix.abi)}}

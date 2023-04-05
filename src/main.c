@@ -19,6 +19,10 @@ int child() {
     return 3;
 }
 
+void empty_variadic(int n, ...) {
+
+}
+
 void pseudo_printf(int n, ...) {
     va_list args;
     va_start(args, n);
@@ -47,5 +51,10 @@ void __attribute__((constructor)) mod_preinit() {
     //pseudo_printf(4, "Hello", "World", "From", "M1");
     putchar('0' + add3(2, 2, 5));
     printf("\n");
+    printf("empty_variadic(0)");
+    empty_variadic(0);
+    printf("pseudo_printf(0)");
     pseudo_printf(0);
+    printf("pseudo_printf(1, \"Hello Wrld\")");
+    pseudo_printf(1, "Hello Wrld");
 }
