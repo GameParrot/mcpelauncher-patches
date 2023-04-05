@@ -19,14 +19,6 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
         return;
     }
     mcpelauncher_preinithook = (decltype(mcpelauncher_preinithook)) dlsym(h, "mcpelauncher_preinithook");
-    mcpelauncher_preinithook("pthread_getattr_np", (void*)+[](pthread_t th, pthread_attr_t* attr) -> int {
-        return 1;
-    }, &pthread_getattr_np_org);
-    mcpelauncher_preinithook("pthread_attr_getstack", (void*)+[](pthread_attr_t* attr, void **stackaddr, size_t *stacksize) -> int {
-        return 1;
-    }, nullptr);
-    mcpelauncher_preinithook("mremap", (void*)&mremap_fake, nullptr);
-    //mcpelauncher_preinithook("_ZNK11AppPlatform17supportsScriptingEv", (void*)+[](void* t) -> bool { abort() ;return true; }, nullptr);
     __ZNK11AppPlatform12isLANAllowedEv = (void*)+[](void*** t) -> bool {
         auto mc = dlopen("libminecraftpe.so", 0);
 
