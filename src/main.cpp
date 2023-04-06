@@ -41,7 +41,6 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
         auto _ZNK11AppPlatform23getMaxSimRadiusInChunksEv = (void**)dlsym(mc, "_ZNK11AppPlatform23getMaxSimRadiusInChunksEv");
         auto _ZNK11AppPlatform10getEditionEv = (void**)dlsym(mc, "_ZNK11AppPlatform10getEditionEv");
         auto _ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv = (void**)dlsym(mc, "_ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv");
-        auto _ZNK11AppPlatform19getDefaultUIProfileEv = (void**)dlsym(mc, "_ZNK11AppPlatform19getDefaultUIProfileEv");
         
         for(int i = 0; raw[i] && raw[i] != (void*)0xffffffffffffffe8; i++) {
             if(raw[i] == _ZNK11AppPlatform19supportsFilePickingEv) {
@@ -85,13 +84,6 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
                     return 8;
                 };
                 printf("Patched _ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv\n");
-            }
-            if(raw[i] == _ZNK11AppPlatform19getDefaultUIProfileEv) {
-                othervt[i] = (void*) +[](void*t) -> int {
-                    printf("_ZNK11AppPlatform19getDefaultUIProfileEv called\n");
-                    return 0;
-                };
-                printf("Patched _ZNK11AppPlatform19getDefaultUIProfileEv\n");
             }
             if(othervt[i] == __ZNK11AppPlatform12isLANAllowedEv) {
                 othervt[i] = _ZNK11AppPlatform12isLANAllowedEv;
