@@ -2,9 +2,10 @@
 
 This is a mod for mcpelauncher-manifest that has additional symbol patches.
 
-Symbols patched:
+Symbols patched: 
+
 `_ZNK11AppPlatform19supportsFilePickingEv` - Allows for file import/export  
-`_ZNK11AppPlatform17supportsScriptingEv` - Allows for scripting in older versions  
+`_ZNK11AppPlatform17supportsScriptingEv` - Allows for scripting in older versions 
 `_ZNK11AppPlatform25getPlatformUIScalingRulesEv` - Makes default GUI smaller to match windows  
 `_ZNK11AppPlatform23getMaxSimRadiusInChunksEv` - Makes the max simulation distance 12 chunks to match windows  
 `_ZNK11AppPlatform10getEditionEv` - Returns win10, allowing for world export  
