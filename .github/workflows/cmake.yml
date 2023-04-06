@@ -33,41 +33,8 @@ jobs:
         ndk-version: r21e
         add-to-path: true
     - uses: actions/checkout@v2
-      with:
-        repository: "openssl/openssl"
-        ref: master
-        path: openssl
-        
-    - name: Configure and build Openssl
-      run: |
-        export PATH="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/:$PATH"
-        ./Configure -latomic ${{ matrix.openssltarget || format('android-{0}', matrix.abi) }} && make build_libs
-      env:
-        ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
-        LD: ${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/${{matrix.ndktarget}}ld
-        RANLIB: ${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/${{matrix.ndktarget}}ranlib
-      working-directory: ${{github.workspace}}/openssl
-      
-    - uses: actions/upload-artifact@v2
-      with:
-        name: openssl-${{format('android-{0}', matrix.abi)}}
-        path: |
-          openssl/libssl.so
-          openssl/libcrypto.so
-    - uses: actions/checkout@v2
-      with:
-        repository: "protocolbuffers/protobuf"
-        ref: 3.18.x
-        path: protobuf
-        submodules: recursive
-    - name: Configure Protobuf
-      run: cmake -B ${{github.workspace}}/buildprotobuf -S protobuf/cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake -DANDROID_ABI=${{ matrix.abi }} -Dprotobuf_BUILD_TESTS=OFF
-    - name: Build Protobuf
-      run: cmake --build ${{github.workspace}}/buildprotobuf --config ${{env.BUILD_TYPE}} --target libprotobuf
-    - name: Configure Protoc
-      run: cmake -B ${{github.workspace}}/buildprotobufhost -S protobuf/cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -Dprotobuf_BUILD_TESTS=OFF
-    - name: Build Protoc
-      run: cmake --build ${{github.workspace}}/buildprotobufhost --config ${{env.BUILD_TYPE}} --target protoc
+     
+ 
     - name: Configure
       run: cmake -B ${{github.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake -DANDROID_ABI=${{ matrix.abi }} "-DProtobuf_SRC_ROOT_FOLDER=${{github.workspace}}/protobuf/src" "-DProtobuf_INCLUDE_DIR=${{github.workspace}}/protobuf/src" "-DProtobuf_PROTOC_EXECUTABLE=${{github.workspace}}/buildprotobufhost/protoc" "-DProtobuf_LIBRARY=${{github.workspace}}/buildprotobuf/libprotobuf.a" "-DOPENSSL_SSL_LIBRARY=${{github.workspace}}/openssl/libssl.so" "-DOPENSSL_CRYPTO_LIBRARY=${{github.workspace}}/openssl/libcrypto.so" "-DOPENSSL_INCLUDE_DIR=${{github.workspace}}/openssl/include" "-DCMAKE_CXX_FLAGS=-Wl,--strip-all -fvisibility=hidden"
     - name: Build
