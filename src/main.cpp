@@ -67,7 +67,7 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
             if(raw[i] == _ZNK11AppPlatform23getMaxSimRadiusInChunksEv) {
                 othervt[i] = (void*) +[](void*t) -> int {
                     printf("_ZNK11AppPlatform23getMaxSimRadiusInChunksEv called\n");
-                    return 8;
+                    return 12;
                 };
                 printf("Patched _ZNK11AppPlatform23getMaxSimRadiusInChunksEv\n");
             }
