@@ -42,6 +42,6 @@ jobs:
     
     - uses: actions/upload-artifact@v2
       with:
-        name: update-${{format('android-{0}', matrix.abi)}}
+        name: patches-${{format('android-{0}', matrix.abi)}}
         path: |
           build/libmcpelauncherpatches.so
