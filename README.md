@@ -1,6 +1,6 @@
-# mcpelauncherupdates
+# mcpelauncher-patches
 
-This is a mod for mcpelauncher-manifest to allow newer Minecraft Versions to run.
+This is a mod for mcpelauncher-manifest that has additional symbol patches.
 
 ## Building
 `PATH_TO_NDK="/path/to/ndk"`
