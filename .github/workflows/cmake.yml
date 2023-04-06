@@ -38,10 +38,10 @@ jobs:
     - name: Configure
       run: cmake -B ${{github.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake -DANDROID_ABI=${{ matrix.abi }} "-DCMAKE_CXX_FLAGS=-Wl,--strip-all -fvisibility=hidden"
     - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target mcpelauncherupdates
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target mcpelauncherpatches
     
     - uses: actions/upload-artifact@v2
       with:
         name: update-${{format('android-{0}', matrix.abi)}}
         path: |
-          build/libmcpelauncherupdates.so
+          build/libmcpelauncherpatches.so
