@@ -38,15 +38,9 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
         auto _ZNK11AppPlatform19supportsFilePickingEv = (void**)dlsym(mc, "_ZNK11AppPlatform19supportsFilePickingEv");
         auto _ZNK11AppPlatform17supportsScriptingEv = (void**)dlsym(mc, "_ZNK11AppPlatform17supportsScriptingEv");
         auto _ZNK11AppPlatform25getPlatformUIScalingRulesEv = (void**)dlsym(mc, "_ZNK11AppPlatform25getPlatformUIScalingRulesEv");
-        auto _ZNK11AppPlatform18supportsWorldShareEv = (void**)dlsym(mc, "_ZNK11AppPlatform18supportsWorldShareEv");
-        auto _ZNK11AppPlatform20getLevelSaveIntervalEv = (void**)dlsym(mc, "_ZNK11AppPlatform20getLevelSaveIntervalEv");
+        auto _ZNK11AppPlatform23getMaxSimRadiusInChunksEv = (void**)dlsym(mc, "_ZNK11AppPlatform23getMaxSimRadiusInChunksEv");
         auto _ZNK11AppPlatform10getEditionEv = (void**)dlsym(mc, "_ZNK11AppPlatform10getEditionEv");
         auto _ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv = (void**)dlsym(mc, "_ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv");
-        auto _ZNK11AppPlatform23supports3rdPartyServersEv = (void**)dlsym(mc, "_ZNK11AppPlatform23supports3rdPartyServersEv");
-        auto _ZNK11AppPlatform29allowsResourcePackDevelopmentEv = (void**)dlsym(mc, "_ZNK11AppPlatform29allowsResourcePackDevelopmentEv");
-        auto _ZNK11AppPlatform30supportsAutoSaveOnDBCompactionEv = (void**)dlsym(mc, "_ZNK11AppPlatform30supportsAutoSaveOnDBCompactionEv");
-        auto _ZNK11AppPlatform23isAutoCompactionEnabledEv = (void**)dlsym(mc, "_ZNK11AppPlatform23isAutoCompactionEnabledEv");
-        auto _ZN11AppPlatform22uiOpenRenderDistScalarEv =  (void**)dlsym(mc, "_ZN11AppPlatform22uiOpenRenderDistScalarEv");
         
         for(int i = 0; raw[i] && raw[i] != (void*)0xffffffffffffffe8; i++) {
             if(raw[i] == _ZNK11AppPlatform19supportsFilePickingEv) {
@@ -70,12 +64,12 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
                 };
                 printf("Patched _ZNK11AppPlatform25getPlatformUIScalingRulesEv\n");
             }
-            if(raw[i] == _ZNK11AppPlatform18supportsWorldShareEv) {
-                othervt[i] = (void*) +[](void*t) -> bool {
-                    printf("_ZNK11AppPlatform18supportsWorldShareEv called\n");
-                    return true;
+            if(raw[i] == _ZNK11AppPlatform23getMaxSimRadiusInChunksEv) {
+                othervt[i] = (void*) +[](void*t) -> int {
+                    printf("_ZNK11AppPlatform23getMaxSimRadiusInChunksEv called\n");
+                    return 8;
                 };
-                printf("Patched _ZNK11AppPlatform18supportsWorldShareEv\n");
+                printf("Patched _ZNK11AppPlatform23getMaxSimRadiusInChunksEv\n");
             }
             if(raw[i] == _ZNK11AppPlatform10getEditionEv) {
                 othervt[i] = (void*) +[](void*t) -> std::string {
@@ -87,23 +81,9 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
             if(raw[i] == _ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv) {
                 othervt[i] = (void*) +[](void*t) -> int {
                     printf("_ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv called\n");
-                    return 100;
+                    return 8;
                 };
                 printf("Patched _ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv\n");
-            }
-            if(raw[i] == _ZNK11AppPlatform29allowsResourcePackDevelopmentEv) {
-                othervt[i] = (void*) +[](void*t) -> bool {
-                    printf("_ZNK11AppPlatform29allowsResourcePackDevelopmentEv called\n");
-                    return false;
-                };
-                printf("Patched _ZNK11AppPlatform29allowsResourcePackDevelopmentEv\n");
-            }
-            if(raw[i] == _ZN11AppPlatform22uiOpenRenderDistScalarEv) {
-                othervt[i] = (void*) +[](void*t) -> int {
-                    printf("_ZN11AppPlatform22uiOpenRenderDistScalarEv called\n");
-                    return 512;
-                };
-                printf("Patched _ZN11AppPlatform22uiOpenRenderDistScalarEv\n");
             }
             if(othervt[i] == __ZNK11AppPlatform12isLANAllowedEv) {
                 othervt[i] = _ZNK11AppPlatform12isLANAllowedEv;
