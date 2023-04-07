@@ -11,9 +11,7 @@ void*__ZNK11AppPlatform12isLANAllowedEv;
 
 extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
     auto h = dlopen("libmcpelauncher_mod.so", 0);
-    if(!h) {
-        return;
-    }
+
     mcpelauncher_preinithook = (decltype(mcpelauncher_preinithook)) dlsym(h, "mcpelauncher_preinithook");
     
     __ZNK11AppPlatform12isLANAllowedEv = (void*)+[](void*** t) -> bool {
