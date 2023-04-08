@@ -11,6 +11,10 @@ Symbols patched:
 `_ZNK11AppPlatform10getEditionEv` - Returns win10, allowing for world export  
 `_ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv` - Allows for up to 8 players by default to match windows  
 
+## Fullscreen
+To get the fullscreen toggle to show, you will have to use the Fullscreen option resource pack (`Fullscreen option.mcpack`)
+
+
 ## Building
 `PATH_TO_NDK="/path/to/ndk"`
 - x86
