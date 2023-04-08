@@ -26,7 +26,8 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
         auto _ZNK11AppPlatform23getMaxSimRadiusInChunksEv = (void**)dlsym(mc, "_ZNK11AppPlatform23getMaxSimRadiusInChunksEv");
         auto _ZNK11AppPlatform10getEditionEv = (void**)dlsym(mc, "_ZNK11AppPlatform10getEditionEv");
         auto _ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv = (void**)dlsym(mc, "_ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv");
-        
+        auto _ZNK11AppPlatform16getBuildPlatformEv = (void**)dlsym(mc, "_ZNK11AppPlatform16getBuildPlatformEv");
+
         for(int i = 0; raw[i] && raw[i] != (void*)0xffffffffffffffe8; i++) {
             if(raw[i] == _ZNK11AppPlatform19supportsFilePickingEv) {
                 othervt[i] = (void*) +[](void*t) -> bool {
@@ -56,6 +57,11 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
             if(raw[i] == _ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv) {
                 othervt[i] = (void*) +[](void*t) -> int {
                     return 8;
+                };
+            }
+            if(raw[i] == _ZNK11AppPlatform16getBuildPlatformEv) {
+                othervt[i] = (void*) +[](void*t) -> int {
+                    return 3; // I don't know what build platform 3 is. The fullscreen option shows, so it is likely a computer. 1 - Android, 2 - iOS, 11 - PS4, 12 - Unknown console, 13 - UWP
                 };
             }
             if(othervt[i] == __ZNK11AppPlatform12isLANAllowedEv) {
