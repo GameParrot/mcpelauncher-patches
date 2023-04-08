@@ -12,7 +12,7 @@ Symbols patched:
 `_ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv` - Allows for up to 8 players by default to match windows  
 
 ## Fullscreen
-To get the fullscreen toggle to show, you will have to use the Fullscreen option resource pack (`Fullscreen option.mcpack`)
+To get the fullscreen toggle to show in video settings, you will have to use the Fullscreen option resource pack (`Fullscreen option.mcpack`). You can still toggle fullscreen using F11 without the resource pack.
 
 
 ## Building
