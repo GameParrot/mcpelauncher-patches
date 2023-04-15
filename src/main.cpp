@@ -31,6 +31,18 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
                         bp = 8;
                     }
                 }).detach();
+            } else if (strcmp(node, "play.inpvp.net") == 0) {
+                bp = 8;
+            } else if (strcmp(node, "mco.lbsg.net") == 0) {
+                bp = 8;
+            } else if (strcmp(node, "mco.mineplex.com") == 0) {
+                bp = 8;
+            } else if (strcmp(node, "mco.cubecraft.net") == 0) {
+                bp = 8;
+            } else if (strcmp(node, "play.galaxite.net") == 0) {
+                bp = 8;
+            } else if (strcmp(node, "play.pixelparadise.gg") == 0) {
+                bp = 8;
             }
         }
         return getaddrinfo(node, service, hints, res);
