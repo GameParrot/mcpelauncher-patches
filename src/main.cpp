@@ -13,6 +13,68 @@ void*_ZNK11AppPlatform12isLANAllowedEv;
 void*__ZNK11AppPlatform12isLANAllowedEv;
 int bp = 8;
 int patchId = 0;
+bool lastWasIp = true;
+
+int isValidIp4 (char *str) {
+    int segs = 0;   /* Segment count. */
+    int chcnt = 0;  /* Character count within segment. */
+    int accum = 0;  /* Accumulator for segment. */
+
+    /* Catch NULL pointer. */
+
+    if (str == NULL)
+        return 0;
+
+    /* Process every character in string. */
+
+    while (*str != '\0') {
+        /* Segment changeover. */
+
+        if (*str == '.') {
+            /* Must have some digits in segment. */
+
+            if (chcnt == 0)
+                return 0;
+
+            /* Limit number of segments. */
+
+            if (++segs == 4)
+                return 0;
+
+            /* Reset segment values and restart loop. */
+
+            chcnt = accum = 0;
+            str++;
+            continue;
+        }
+        /* Check numeric. */
+
+        if ((*str < '0') || (*str > '9'))
+            return 0;
+
+        /* Accumulate and check segment. */
+
+        if ((accum = accum * 10 + *str - '0') > 255)
+            return 0;
+
+        /* Advance other segment specific stuff and continue loop. */
+
+        chcnt++;
+        str++;
+    }
+
+    /* Check enough segments and enough characters in last segment. */
+
+    if (segs != 3)
+        return 0;
+
+    if (chcnt == 0)
+        return 0;
+
+    /* Address okay. */
+
+    return 1;
+}
 
 extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
     auto h = dlopen("libmcpelauncher_mod.so", 0);
@@ -21,17 +83,25 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
 
     mcpelauncher_preinithook("getaddrinfo", (void*)+[](const char *node, const char *service, const addrinfo *hints, addrinfo **res) -> int {
         if (node) {
-            if (strcmp(node, "geo.hivebedrock.network") == 0) {
-                patchId++;
-                std::thread([=]() {
-                    int patchIdOld = patchId;
-                    bp = 1;
-                    sleep(3);
-                    if (patchIdOld == patchId) {
-                        bp = 8;
-                    }
-                }).detach();
-            } else if (strcmp(node, "play.inpvp.net") == 0) {
+            if (lastWasIp) {
+                if (strcmp(node, "geo.hivebedrock.network") == 0) {
+                    patchId++;
+                    std::thread([=]() {
+                        int patchIdOld = patchId;
+                        bp = 1;
+                        sleep(3);
+                        if (patchIdOld == patchId) {
+                            bp = 8;
+                        }
+                    }).detach();
+                }
+                if ((isValidIp4((char*)node) == 0) && (std::string(node).find(":") == std::string::npos)) {
+                    printf("Invalid\n");
+                    lastWasIp = false;
+                }
+                printf("%s\n%d\n", node, lastWasIp);
+            }
+            if (strcmp(node, "play.inpvp.net") == 0) {
                 bp = 8;
             } else if (strcmp(node, "mco.lbsg.net") == 0) {
                 bp = 8;
@@ -43,6 +113,10 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
                 bp = 8;
             } else if (strcmp(node, "play.pixelparadise.gg") == 0) {
                 bp = 8;
+            }
+            if ((isValidIp4((char*)node) != 0) || std::string(node).find(":") != std::string::npos) {
+                printf("valid\n");
+                lastWasIp = true;
             }
         }
         return getaddrinfo(node, service, hints, res);
