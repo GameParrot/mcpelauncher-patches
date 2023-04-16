@@ -13,7 +13,7 @@ void*_ZNK11AppPlatform12isLANAllowedEv;
 void*__ZNK11AppPlatform12isLANAllowedEv;
 int bp = 8;
 int patchId = 0;
-bool lastWasIp = true;
+bool lastWasIp = false;
 
 int isValidIp4 (char *str) {
     int segs = 0;   /* Segment count. */
