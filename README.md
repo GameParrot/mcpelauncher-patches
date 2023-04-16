@@ -10,9 +10,7 @@ Symbols patched:
 `_ZNK11AppPlatform23getMaxSimRadiusInChunksEv` - Makes the max simulation distance 12 chunks to match windows  
 `_ZNK11AppPlatform10getEditionEv` - Returns win10, allowing for world export  
 `_ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv` - Allows for up to 8 players by default to match windows  
-
-## Fullscreen
-To get the fullscreen toggle to show in video settings, you will have to use the Fullscreen option resource pack (`Fullscreen option.mcpack`). You can still toggle fullscreen using F11 without the resource pack.
+`_ZNK11AppPlatform16getBuildPlatformEv` - Allows for fullscreen and makes servers (except for the hive) see you as windows
 
 
 ## Building
