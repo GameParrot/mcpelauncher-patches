@@ -11,7 +11,8 @@ void (*mcpelauncher_preinithook)(const char*sym, void*val, void **orig);
 
 void*_ZNK11AppPlatform12isLANAllowedEv;
 void*__ZNK11AppPlatform12isLANAllowedEv;
-int bp = 8;
+int defaultBp = 8;
+int bp = defaultBp;
 int patchId = 0;
 bool lastWasIp = false;
 
@@ -72,7 +73,7 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
                         bp = 1;
                         sleep(3);
                         if (patchIdOld == patchId) {
-                            bp = 8;
+                            bp = defaultBp;
                         }
                     }).detach();
                 }
@@ -81,17 +82,17 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
                 }
             }
             if (strcmp(node, "play.inpvp.net") == 0) {
-                bp = 8;
+                bp = defaultBp;
             } else if (strcmp(node, "mco.lbsg.net") == 0) {
-                bp = 8;
+                bp = defaultBp;
             } else if (strcmp(node, "mco.mineplex.com") == 0) {
-                bp = 8;
+                bp = defaultBp;
             } else if (strcmp(node, "mco.cubecraft.net") == 0) {
-                bp = 8;
+                bp = defaultBp;
             } else if (strcmp(node, "play.galaxite.net") == 0) {
-                bp = 8;
+                bp = defaultBp;
             } else if (strcmp(node, "play.pixelparadise.gg") == 0) {
-                bp = 8;
+                bp = defaultBp;
             }
             if ((isValidIp4((char*)node) != 0) || std::string(node).find(":") != std::string::npos) {
                 lastWasIp = true;
@@ -114,6 +115,7 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
         auto _ZNK11AppPlatform10getEditionEv = (void**)dlsym(mc, "_ZNK11AppPlatform10getEditionEv");
         auto _ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv = (void**)dlsym(mc, "_ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv");
         auto _ZNK11AppPlatform16getBuildPlatformEv = (void**)dlsym(mc, "_ZNK11AppPlatform16getBuildPlatformEv");
+        auto _ZN11AppPlatform19setKeepScreenOnFlagEb = (void**)dlsym(mc, "_ZN11AppPlatform19setKeepScreenOnFlagEb");
 
         for(int i = 0; raw[i] && raw[i] != (void*)0xffffffffffffffe8; i++) {
             if(raw[i] == _ZNK11AppPlatform19supportsFilePickingEv) {
@@ -149,6 +151,21 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
             if(raw[i] == _ZNK11AppPlatform16getBuildPlatformEv) {
                 othervt[i] = (void*) +[](void*t) -> int {
                     return bp;
+                };
+            }
+            if(raw[i] == _ZN11AppPlatform19setKeepScreenOnFlagEb) {
+                othervt[i] = (void*) +[](void*t, bool on) {
+                    if (on) {
+                        defaultBp = 7;
+                        if (bp != 1) {
+                            bp = defaultBp;
+                        }
+                    } else {
+                        defaultBp = 8;
+                        if (bp != 1) {
+                            bp = defaultBp;
+                        }
+                    }
                 };
             }
             if(othervt[i] == __ZNK11AppPlatform12isLANAllowedEv) {
