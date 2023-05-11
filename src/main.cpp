@@ -66,7 +66,7 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
     mcpelauncher_preinithook("getaddrinfo", (void*)+[](const char *node, const char *service, const addrinfo *hints, addrinfo **res) -> int {
         if (node) {
             if (lastWasIp) {
-                if (strstr(node, "hivebedrock") == 0) {
+                if (strstr(node, "hivebedrock.network") == 0) {
                     patchId++;
                     std::thread([=]() {
                         int patchIdOld = patchId;
