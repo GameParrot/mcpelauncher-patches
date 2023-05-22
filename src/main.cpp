@@ -177,7 +177,7 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
         return true;
     };
     mcpelauncher_preinithook("_ZNK11AppPlatform12isLANAllowedEv", __ZNK11AppPlatform12isLANAllowedEv, &_ZNK11AppPlatform12isLANAllowedEv);
-    dlclose(h);
+    //dlclose(h);
 }
 
 extern "C" __attribute__ ((visibility ("default"))) void mod_init() {
