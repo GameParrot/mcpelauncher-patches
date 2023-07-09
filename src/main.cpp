@@ -116,6 +116,7 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
         auto _ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv = (void**)dlsym(mc, "_ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv");
         auto _ZNK11AppPlatform16getBuildPlatformEv = (void**)dlsym(mc, "_ZNK11AppPlatform16getBuildPlatformEv");
         auto _ZN11AppPlatform19setKeepScreenOnFlagEb = (void**)dlsym(mc, "_ZN11AppPlatform19setKeepScreenOnFlagEb");
+        auto _ZNK11AppPlatform22blankLineDismissesChatEv = (void**)dlsym(mc, "_ZNK11AppPlatform22blankLineDismissesChatEv");
 
         for(int i = 0; raw[i] && raw[i] != (void*)0xffffffffffffffe8; i++) {
             if(raw[i] == _ZNK11AppPlatform19supportsFilePickingEv) {
@@ -166,6 +167,11 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
                             bp = defaultBp;
                         }
                     }
+                };
+            }
+            if(raw[i] == _ZNK11AppPlatform22blankLineDismissesChatEv) {
+                othervt[i] = (void*) +[](void*t) -> bool {
+                    return true;
                 };
             }
             if(othervt[i] == __ZNK11AppPlatform12isLANAllowedEv) {
