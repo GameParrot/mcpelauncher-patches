@@ -1,105 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dlfcn.h>
-#include <sys/mman.h>
 #include <string>
-#include <thread>
-#include <unistd.h>
-#include <netdb.h>
 
 void (*mcpelauncher_preinithook)(const char*sym, void*val, void **orig);
 
 void*_ZNK11AppPlatform12isLANAllowedEv;
 void*__ZNK11AppPlatform12isLANAllowedEv;
-int defaultBp = 8;
-int bp = defaultBp;
-int patchId = 0;
-bool lastWasIp = false;
-
-int isValidIp4 (char *str) {
-    int segs = 0;   /* Segment count. */
-    int chcnt = 0;  /* Character count within segment. */
-    int accum = 0;  /* Accumulator for segment. */
-    /* Catch NULL pointer. */
-    if (str == NULL)
-        return 0;
-    /* Process every character in string. */
-    while (*str != '\0') {
-        /* Segment changeover. */
-        if (*str == '.') {
-            /* Must have some digits in segment. */
-            if (chcnt == 0)
-                return 0;
-            /* Limit number of segments. */
-            if (++segs == 4)
-                return 0;
-            /* Reset segment values and restart loop. */
-            chcnt = accum = 0;
-            str++;
-            continue;
-        }
-        /* Check numeric. */
-        if ((*str < '0') || (*str > '9'))
-            return 0;
-        /* Accumulate and check segment. */
-        if ((accum = accum * 10 + *str - '0') > 255)
-            return 0;
-        /* Advance other segment specific stuff and continue loop. */
-        chcnt++;
-        str++;
-    }
-    /* Check enough segments and enough characters in last segment. */
-    if (segs != 3)
-        return 0;
-
-    if (chcnt == 0)
-        return 0;
-    /* Address okay. */
-    return 1;
-}
 
 extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
     auto h = dlopen("libmcpelauncher_mod.so", 0);
 
     mcpelauncher_preinithook = (decltype(mcpelauncher_preinithook)) dlsym(h, "mcpelauncher_preinithook");
-
-    mcpelauncher_preinithook("getaddrinfo", (void*)+[](const char *node, const char *service, const addrinfo *hints, addrinfo **res) -> int {
-        if (node) {
-            if (lastWasIp) {
-                if (strstr(node, "hivebedrock.network") != NULL) {
-                    patchId++;
-                    std::thread([=]() {
-                        int patchIdOld = patchId;
-                        bp = 1;
-                        sleep(3);
-                        if (patchIdOld == patchId) {
-                            bp = defaultBp;
-                        }
-                    }).detach();
-                }
-                if ((isValidIp4((char*)node) == 0) && (std::string(node).find(":") == std::string::npos)) {
-                    lastWasIp = false;
-                }
-            }
-            if (strcmp(node, "play.inpvp.net") == 0) {
-                bp = defaultBp;
-            } else if (strcmp(node, "mco.lbsg.net") == 0) {
-                bp = defaultBp;
-            } else if (strcmp(node, "mco.mineplex.com") == 0) {
-                bp = defaultBp;
-            } else if (strcmp(node, "mco.cubecraft.net") == 0) {
-                bp = defaultBp;
-            } else if (strcmp(node, "play.galaxite.net") == 0) {
-                bp = defaultBp;
-            } else if (strcmp(node, "play.pixelparadise.gg") == 0) {
-                bp = defaultBp;
-            }
-            if ((isValidIp4((char*)node) != 0) || std::string(node).find(":") != std::string::npos) {
-                lastWasIp = true;
-            }
-        }
-        return getaddrinfo(node, service, hints, res);
-    }, nullptr);
 
     
     __ZNK11AppPlatform12isLANAllowedEv = (void*)+[](void*** t) -> bool {
@@ -115,7 +27,6 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
         auto _ZNK11AppPlatform10getEditionEv = (void**)dlsym(mc, "_ZNK11AppPlatform10getEditionEv");
         auto _ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv = (void**)dlsym(mc, "_ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv");
         auto _ZNK11AppPlatform16getBuildPlatformEv = (void**)dlsym(mc, "_ZNK11AppPlatform16getBuildPlatformEv");
-        auto _ZN11AppPlatform19setKeepScreenOnFlagEb = (void**)dlsym(mc, "_ZN11AppPlatform19setKeepScreenOnFlagEb");
         auto _ZNK11AppPlatform22blankLineDismissesChatEv = (void**)dlsym(mc, "_ZNK11AppPlatform22blankLineDismissesChatEv");
 
         for(int i = 0; raw[i] && raw[i] != (void*)0xffffffffffffffe8; i++) {
@@ -149,25 +60,12 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
                     return 8;
                 };
             }
-            if(raw[i] == _ZNK11AppPlatform16getBuildPlatformEv) {
-                othervt[i] = (void*) +[](void*t) -> int {
-                    return bp;
-                };
-            }
-            if(raw[i] == _ZN11AppPlatform19setKeepScreenOnFlagEb) {
-                othervt[i] = (void*) +[](void*t, bool on) {
-                    if (on) {
-                        defaultBp = 7;
-                        if (bp != 1) {
-                            bp = defaultBp;
-                        }
-                    } else {
-                        defaultBp = 8;
-                        if (bp != 1) {
-                            bp = defaultBp;
-                        }
-                    }
-                };
+            if (getenv("MCPEPATCHES_PATCH_BP")) {
+                if(raw[i] == _ZNK11AppPlatform16getBuildPlatformEv) {
+                    othervt[i] = (void*) +[](void*t) -> int {
+                        return 8;
+                    };
+                }
             }
             if(raw[i] == _ZNK11AppPlatform22blankLineDismissesChatEv) {
                 othervt[i] = (void*) +[](void*t) -> bool {
