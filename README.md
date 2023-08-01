@@ -10,7 +10,7 @@ Symbols patched:
 `_ZNK11AppPlatform23getMaxSimRadiusInChunksEv` - Makes the max simulation distance 12 chunks to match windows  
 `_ZNK11AppPlatform10getEditionEv` - Returns win10, allowing for world export  
 `_ZNK11AppPlatform27getDefaultNetworkMaxPlayersEv` - Allows for up to 8 players by default to match windows  
-`_ZNK11AppPlatform16getBuildPlatformEv` - Allows for fullscreen and makes servers (except for the hive) see you as windows. This is disabled unless `MCPEPATCHES_PATCH_BP` is in environment.  
+`_ZNK11AppPlatform16getBuildPlatformEv` - Allows for fullscreen and makes servers see you as windows. This is disabled unless `MCPEPATCHES_PATCH_BP` is in environment. This can get you banned from some servers, so I would not recommend enabling if you play on servers.  
 `_ZNK11AppPlatform22blankLineDismissesChatEv` = Makes pressing return when chat is empty close it
 
 
